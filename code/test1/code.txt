@@ -1,0 +1,216 @@
+// C++ code
+#include <LiquidCrystal.h>
+#include <Keypad.h>
+ 
+
+LiquidCrystal lcd(13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3);  /* For 8-bit mode */
+
+unsigned char Character1[8] = { 0x04, 0x1F, 0x11, 0x11, 0x1F, 0x1F, 0x1F, 0x1F }; /* Custom Character 1 */
+unsigned char Character2[8] = { 0x01, 0x03, 0x07, 0x1F, 0x1F, 0x07, 0x03, 0x01 }; /* Custom Character 2 */
+
+char pass[4] = "1234";
+int index = 0; 
+int curs = -1 ;
+int tries = 0 ;
+bool safeIsOpen = false ;  
+
+char inputPass[4]; 
+
+
+void setup() {
+  Serial.begin(9600); /* Define baud rate for serial communication */
+   pinMode(2, OUTPUT); 
+  lcd.begin(16,2);  /* Initialize 16x2 LCD */
+  lcd.clear();  /* Clear the LCD */
+}
+
+void loop() {
+  if(safeIsOpen){
+    lcd.setCursor(0,0);  /* Set cursor to column 0 row 0 */
+    lcd.print("Safe is Open!");
+  }
+  else if(tries >= 3 ){
+    lcd.setCursor(0,0);  /* Set cursor to column 0 row 0 */
+    lcd.print("no more tries !");
+  }else{
+    lcd.setCursor(0,0);  /* Set cursor to column 0 row 0 */
+    lcd.print("Enter Password:");
+    keypad_loop();
+  }
+}
+
+void keypad_loop(){
+ int adc_val;
+  adc_val = analogRead(A1); /* Read input from keypad */
+  if (adc_val==39  || adc_val==40)
+  {
+    if(index <= 3){
+       lcd.setCursor(++curs , 1);
+       lcd.print("0");  
+       inputPass[index++] = '0' ; 
+    }
+    delay(100);
+  }
+  else if (adc_val>970)
+  {
+    if(index <= 3){
+       lcd.setCursor(++curs , 1);
+       lcd.print("1");  
+       inputPass[index++] = '1' ; 
+    }
+    delay(100);
+  }
+  else if (adc_val==91  || adc_val==92)
+  {
+    if(index <= 3){
+       lcd.setCursor(++curs , 1);
+       lcd.print("2");  
+       inputPass[index++] = '2' ; 
+    }
+    delay(100);
+  }
+  else if (adc_val==83  || adc_val==84)
+  {
+    if(index <= 3){
+       lcd.setCursor(++curs , 1);
+       lcd.print("3");  
+       inputPass[index++] = '3' ; 
+    }
+  }
+  else if (adc_val==176  || adc_val==177)
+  {
+    if(index <= 3){
+       lcd.setCursor(++curs , 1);
+       lcd.print("4");  
+       inputPass[index++] = '4' ; 
+    }
+    delay(100);
+  }
+  else if (adc_val==63  || adc_val==64)
+  {
+    if(index <= 3){
+       lcd.setCursor(++curs , 1);
+       lcd.print("5");  
+       inputPass[index++] = '5' ; 
+    }
+    delay(100);
+  }
+  else if (adc_val==59  || adc_val==60)
+  {
+    if(index <= 3){
+       lcd.setCursor(++curs , 1);
+       lcd.print("6");  
+       inputPass[index++] = '6' ; 
+    }
+    delay(100);
+  }
+  else if (adc_val==95  || adc_val==96)
+  {
+    if(index <= 3){
+       lcd.setCursor(++curs , 1);
+       lcd.print("7");  
+       inputPass[index++] = '7' ; 
+    }
+    delay(100);
+  }
+  else if (adc_val==48  || adc_val==49)
+  {
+    if(index <= 3){
+       lcd.setCursor(++curs , 1);
+       lcd.print("8");  
+       inputPass[index++] = '8' ; 
+    }
+    delay(100);
+  }
+  else if (adc_val==46  || adc_val==47)
+  {
+    if(index <= 3){
+       lcd.setCursor(++curs , 1);
+       lcd.print("9");  
+       inputPass[index++] = '9' ; 
+    }
+    delay(100);
+  }
+  else if (adc_val == 77 || adc_val == 78)
+  {
+    if(isCorrect()){
+      lcd.clear();
+      lcd.setCursor(0, 0); 
+      lcd.print("Correct Password");
+      safeIsOpen = true; 
+      index = 0; 
+      curs = -1;
+      delay(1000); 
+    }else{
+      lcd.clear();
+      lcd.setCursor(0, 0); 
+      lcd.print("Wrong Password");
+      ++tries; 
+      index = 0 ; 
+      curs = -1;
+      delay(1000);
+      digitalWrite(2, HIGH);
+      delay(3000);                  // waits for a 3 second
+      digitalWrite(2, LOW); 
+    }
+    
+  }
+  else if (adc_val==56  || adc_val==57)
+  {
+    if(index <= 3){
+       lcd.setCursor(++curs , 1);
+       lcd.print("B");  
+       inputPass[index++] = 'B' ; 
+    }
+    delay(100);
+  }
+  else if (adc_val==43  || adc_val==44)
+  {
+    if(index <= 3){
+       lcd.setCursor(++curs , 1);
+       lcd.print("B");  
+       inputPass[index++] = 'C' ; 
+    }
+    delay(100);
+  }
+  else if (adc_val==34  || adc_val==35)
+  {
+    if(index <= 3){
+       lcd.setCursor(++curs , 1);
+       lcd.print("D");  
+       inputPass[index++] = 'D' ; 
+    }
+    delay(100);
+  }
+  else if (adc_val==65  || adc_val==66)
+  {
+    if(index <= 3){
+       lcd.setCursor(++curs , 1);
+       lcd.print("*");  
+       inputPass[index++] = '*' ; 
+    }
+    delay(100);
+  }
+  else if( adc_val==37 || adc_val ==38)
+  {
+    if(index <= 3){
+       lcd.setCursor(++curs , 1);
+       lcd.print("#");  
+       inputPass[index++] = '#' ; 
+    }
+    delay(100);
+  }
+  else
+  {
+    
+  }
+  delay(100);
+} 
+
+bool isCorrect(){
+  for(int i = 0; i<4 ; ++i ){
+    if(inputPass[i] != pass[i])
+        return false; 
+  }
+  return true ; 
+}
